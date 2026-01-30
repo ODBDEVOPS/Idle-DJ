@@ -61,8 +61,65 @@ const HERO_CLASSES = [
 ];
 const ARCHETYPES = ['Brute','Agile','Magique','Technique','Bête'];
 
+/* MAP */
+class Map {
+  constructor(){
+    this.rooms = new Map();
+    this.center = new Hex(0,0);
+    this.addRoom(this.center, ROOM_TYPES[0]);
+    const neigh = this.center.neighbors();
+    for(let i=0;i<6;i++) this.addRoom(neigh[i], randomRoomType());
+  }
+  addRoom(hex, type){
+    const key = hex.key();
+    if(this.rooms.has(key)) return this.rooms.get(key);
+    const room = new Room(hex, type);
+    this.rooms.set(key, room);
+    Game.roomList.push(room);
+    return room;
+  }
+  freeNeighbors(){
+    const set = new Set();
+    for(const room of this.rooms.values()){
+      for(const n of room.hex.neighbors()){
+        if(!this.rooms.has(n.key())) set.add(n.key());
+      }
+    }
+    return Array.from(set).map(k=>{const [q,r]=k.split(',').map(Number);return new Hex(q,r)});
+  }
+  expandOne(){
+    const free = this.freeNeighbors();
+    if(free.length===0) return null;
+    const pick = choose(free);
+    const t = randomRoomType();
+    const room = this.addRoom(pick, t);
+    return room;
+  }
+}
 
 
+
+/* GAME STATE */
+const Game = {
+  rooms: new Map(),
+  roomList: [],
+  map: null,
+  resources: {gold:0, mana:50, essence:0, souls:0},
+  floor: 1,
+  wavesDefeated:0,
+  logLines: [],
+  researchState: { branches: { monsters:0, traps:0, architecture:0, magic:0 } },
+  prestigeLevel: 0,
+  difficultyHistory: [],
+  nextExpansionAt: 0,
+  nextWaveAt: 0,
+  elapsed: 0,
+  timeScale: CONFIG.timeScale,
+  running: true,
+  eventTimer: 0,
+  bossCounter: 0,
+  currentResearch: null,
+};
 /* AXIAL HEX COORD HELPERS */
 class Hex {
   constructor(q,r){ this.q=q; this.r=r; }
@@ -276,41 +333,7 @@ function randomRoomType(){
   return ROOM_TYPES[0];
 }
 
-/* MAP */
-class Map {
-  constructor(){
-    this.rooms = new Map();
-    this.center = new Hex(0,0);
-    this.addRoom(this.center, ROOM_TYPES[0]);
-    const neigh = this.center.neighbors();
-    for(let i=0;i<6;i++) this.addRoom(neigh[i], randomRoomType());
-  }
-  addRoom(hex, type){
-    const key = hex.key();
-    if(this.rooms.has(key)) return this.rooms.get(key);
-    const room = new Room(hex, type);
-    this.rooms.set(key, room);
-    Game.roomList.push(room);
-    return room;
-  }
-  freeNeighbors(){
-    const set = new Set();
-    for(const room of this.rooms.values()){
-      for(const n of room.hex.neighbors()){
-        if(!this.rooms.has(n.key())) set.add(n.key());
-      }
-    }
-    return Array.from(set).map(k=>{const [q,r]=k.split(',').map(Number);return new Hex(q,r)});
-  }
-  expandOne(){
-    const free = this.freeNeighbors();
-    if(free.length===0) return null;
-    const pick = choose(free);
-    const t = randomRoomType();
-    const room = this.addRoom(pick, t);
-    return room;
-  }
-}
+
 
 /* DIFFICULTY */
 function computeDifficulty(){
@@ -775,27 +798,7 @@ function applyResearchEffect(node){
 }
 
 
-/* GAME STATE */
-const Game = {
-  rooms: new Map(),
-  roomList: [],
-  map: null,
-  resources: {gold:0, mana:50, essence:0, souls:0},
-  floor: 1,
-  wavesDefeated:0,
-  logLines: [],
-  researchState: { branches: { monsters:0, traps:0, architecture:0, magic:0 } },
-  prestigeLevel: 0,
-  difficultyHistory: [],
-  nextExpansionAt: 0,
-  nextWaveAt: 0,
-  elapsed: 0,
-  timeScale: CONFIG.timeScale,
-  running: true,
-  eventTimer: 0,
-  bossCounter: 0,
-  currentResearch: null,
-};
+
 
 /* ---------- GAME INIT & LOOP ---------- */
 function initGame(){
