@@ -61,27 +61,7 @@ const HERO_CLASSES = [
 ];
 const ARCHETYPES = ['Brute','Agile','Magique','Technique','Bête'];
 
-/* GAME STATE */
-const Game = {
-  rooms: new Map(),
-  roomList: [],
-  map: null,
-  resources: {gold:0, mana:50, essence:0, souls:0},
-  floor: 1,
-  wavesDefeated:0,
-  logLines: [],
-  researchState: { branches: { monsters:0, traps:0, architecture:0, magic:0 } },
-  prestigeLevel: 0,
-  difficultyHistory: [],
-  nextExpansionAt: 0,
-  nextWaveAt: 0,
-  elapsed: 0,
-  timeScale: CONFIG.timeScale,
-  running: true,
-  eventTimer: 0,
-  bossCounter: 0,
-  currentResearch: null,
-};
+
 
 /* AXIAL HEX COORD HELPERS */
 class Hex {
@@ -793,6 +773,29 @@ function applyResearchEffect(node){
   }
   saveStateDebounced();
 }
+
+
+/* GAME STATE */
+const Game = {
+  rooms: new Map(),
+  roomList: [],
+  map: null,
+  resources: {gold:0, mana:50, essence:0, souls:0},
+  floor: 1,
+  wavesDefeated:0,
+  logLines: [],
+  researchState: { branches: { monsters:0, traps:0, architecture:0, magic:0 } },
+  prestigeLevel: 0,
+  difficultyHistory: [],
+  nextExpansionAt: 0,
+  nextWaveAt: 0,
+  elapsed: 0,
+  timeScale: CONFIG.timeScale,
+  running: true,
+  eventTimer: 0,
+  bossCounter: 0,
+  currentResearch: null,
+};
 
 /* ---------- GAME INIT & LOOP ---------- */
 function initGame(){
