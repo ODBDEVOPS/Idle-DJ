@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"/>
+  <title>Coeur de Donjon — Prototype (Recherche + Dépendances)</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="ui">
+    <div id="topbar">
+      <div id="resources">
+        <span id="gold">Or: 0</span>
+        <span id="mana">Mana: 0</span>
+        <span id="essence">Essence: 0</span>
+        <span id="souls">âmes: 0</span>
+      </div>
+      <div id="controls">
+        <button id="speedBtn">Vitesse x10</button>
+        <button id="prestigeBtn">Prestige</button>
+      </div>
+    </div>
+
+    <div id="leftpanel">
+      <h3>Infos</h3>
+      <div id="info">Initialisation...</div>
+      <h3>Recherche</h3>
+      <div id="research-wrap">
+        <svg id="research-links" preserveAspectRatio="none"></svg>
+        <div id="research" class="research-grid"></div>
+      </div>
+      <div id="research-queue"></div>
+    </div>
+
+    <div id="rightpanel">
+      <h3>Logs</h3>
+      <div id="log"></div>
+    </div>
+  </div>
+
+  <canvas id="game" tabindex="0"></canvas>
+
+  <!-- Node detail modal -->
+  <div id="nodeModal" class="modal hidden">
+    <div class="modal-inner">
+      <button class="modal-close" id="modalClose">✕</button>
+      <h2 id="modalTitle">Titre</h2>
+      <div id="modalBranchLevel" class="small muted"></div>
+      <p id="modalDesc"></p>
+      <div id="modalEffects" class="small"></div>
+      <div id="modalCost" class="small muted"></div>
+      <div id="modalTime" class="small muted"></div>
+      <div class="modal-actions">
+        <button id="modalStartBtn">Chercher</button>
+        <button id="modalCancelBtn">Fermer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="main.js"></script>
+</body>
+</html>
